@@ -14,7 +14,7 @@ export class AppError extends Error {
 export const errorMiddleware: ErrorRequestHandler = (error, _req, res, _next) => {
   if (error instanceof ZodError) {
     res.status(400).json({
-      message: "Validation error",
+      message: "Error de validacion",
       error: "VALIDATION_ERROR",
       details: error.flatten().fieldErrors,
     });
@@ -32,7 +32,7 @@ export const errorMiddleware: ErrorRequestHandler = (error, _req, res, _next) =>
   console.error(error);
 
   res.status(500).json({
-    message: "Internal server error",
+    message: "Error interno del servidor",
     error: "INTERNAL_SERVER_ERROR",
   });
 };

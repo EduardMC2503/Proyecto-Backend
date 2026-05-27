@@ -12,7 +12,7 @@ export const vehicleController = {
 
     res.json({
       data: vehicles,
-      message: "Vehicles retrieved successfully",
+      message: "Vehiculos obtenidos correctamente",
     });
   },
 
@@ -22,7 +22,7 @@ export const vehicleController = {
 
     res.json({
       data: vehicle,
-      message: "Vehicle retrieved successfully",
+      message: "Vehiculo obtenido correctamente",
     });
   },
 
@@ -32,7 +32,7 @@ export const vehicleController = {
 
     res.status(201).json({
       data: vehicle,
-      message: "Vehicle created successfully",
+      message: "Vehiculo creado correctamente",
     });
   },
 
@@ -43,7 +43,7 @@ export const vehicleController = {
 
     res.json({
       data: vehicle,
-      message: "Vehicle updated successfully",
+      message: "Vehiculo actualizado correctamente",
     });
   },
 
@@ -53,7 +53,7 @@ export const vehicleController = {
 
     res.json({
       data: vehicle,
-      message: "Vehicle deactivated successfully",
+      message: "Vehiculo desactivado correctamente",
     });
   },
 };

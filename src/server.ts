@@ -6,7 +6,7 @@ const startServer = async () => {
   await connectPrisma();
 
   const server = app.listen(env.PORT, () => {
-    console.log(`Server running on http://localhost:${env.PORT}`);
+    console.log(`Servidor ejecutandose en http://localhost:${env.PORT}`);
   });
 
   const shutdown = async () => {
@@ -21,6 +21,6 @@ const startServer = async () => {
 };
 
 startServer().catch((error) => {
-  console.error("Failed to start server", error);
+  console.error("No se pudo iniciar el servidor", error);
   process.exit(1);
 });

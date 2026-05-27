@@ -17,11 +17,11 @@ const handleVehiclePrismaError = (error: unknown): never => {
     const target = Array.isArray(error.meta?.target) ? error.meta.target : [];
 
     if (target.includes("plate")) {
-      throw new AppError(409, "Vehicle plate already exists", "DUPLICATED_PLATE");
+      throw new AppError(409, "La placa del vehiculo ya existe", "DUPLICATED_PLATE");
     }
 
     if (target.includes("code")) {
-      throw new AppError(409, "Vehicle code already exists", "DUPLICATED_CODE");
+      throw new AppError(409, "El codigo del vehiculo ya existe", "DUPLICATED_CODE");
     }
   }
 
@@ -43,7 +43,7 @@ export const vehicleService = {
     });
 
     if (!vehicle) {
-      throw new AppError(404, "Vehicle not found", "VEHICLE_NOT_FOUND");
+      throw new AppError(404, "Vehiculo no encontrado", "VEHICLE_NOT_FOUND");
     }
 
     return vehicle;

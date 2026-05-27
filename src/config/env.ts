@@ -8,14 +8,14 @@ const envSchema = z.object({
     .enum(["development", "test", "production"])
     .default("development"),
   PORT: z.coerce.number().int().positive().default(3000),
-  DATABASE_URL: z.string().min(1, "DATABASE_URL is required"),
+  DATABASE_URL: z.string().min(1, "DATABASE_URL es obligatoria"),
   FRONTEND_URL: z.string().url().default("http://localhost:4200"),
 });
 
 const parsedEnv = envSchema.safeParse(process.env);
 
 if (!parsedEnv.success) {
-  console.error("Invalid environment variables", parsedEnv.error.flatten().fieldErrors);
+  console.error("Variables de entorno invalidas", parsedEnv.error.flatten().fieldErrors);
   process.exit(1);
 }
 
