@@ -2,6 +2,7 @@ import cors from "cors";
 import express from "express";
 import { env } from "./config/env";
 import { errorMiddleware } from "./middlewares/error.middleware";
+import { assignmentRoutes } from "./modules/assignments/assignment.routes";
 import { driverRoutes } from "./modules/drivers/driver.routes";
 import { vehicleRoutes } from "./modules/vehicles/vehicle.routes";
 
@@ -24,6 +25,7 @@ app.get("/health", (_req, res) => {
   });
 });
 
+app.use("/assignments", assignmentRoutes);
 app.use("/drivers", driverRoutes);
 app.use("/vehicles", vehicleRoutes);
 
