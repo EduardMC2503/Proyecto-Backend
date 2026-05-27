@@ -7,7 +7,9 @@ const assignmentInclude = {
   driver: true,
 };
 
-const isActiveStatus = (status: string) => status.toUpperCase() === "ACTIVE";
+const isActiveStatus = (status: string) => {
+  return ["ACTIVE", "ACTIVO"].includes(status.toUpperCase());
+};
 
 export const assignmentService = {
   findAll: async () => {

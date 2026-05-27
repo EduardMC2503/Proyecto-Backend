@@ -10,7 +10,11 @@
     "prisma:generate": "prisma generate",
     "prisma:migrate": "prisma migrate dev",
     "prisma:status": "prisma migrate status",
+    "prisma:seed": "ts-node-dev --transpile-only --exit-child prisma/seed.ts",
     "test": "echo \"No tests configured yet\" && exit 0"
+  },
+  "prisma": {
+    "seed": "ts-node-dev --transpile-only --exit-child prisma/seed.ts"
   },
   "keywords": [],
   "author": "",

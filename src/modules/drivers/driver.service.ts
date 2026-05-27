@@ -90,7 +90,7 @@ export const driverService = {
     return prisma.driver.update({
       where: { id },
       data: {
-        status: "INACTIVE",
+        status: "INACTIVO",
       },
     });
   },
