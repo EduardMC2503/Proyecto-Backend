@@ -10,13 +10,29 @@ const removeUndefinedValues = <T extends Record<string, unknown>>(data: T) => {
 };
 
 const handleDriverPrismaError = (error: unknown): never => {
-  if (
-    error instanceof Prisma.PrismaClientKnownRequestError &&
-    error.code === "P2002"
-  ) {
-    const target = Array.isArray(error.meta?.target) ? error.meta.target : [];
+  const prismaError = error as {
+    code?: string;
+    meta?: {
+      target?: unknown;
+      driverAdapterError?: {
+        cause?: {
+          originalMessage?: string;
+        };
+      };
+    };
+  };
 
-    if (target.includes("licenseNumber")) {
+  if (prismaError.code === "P2002") {
+    const target = Array.isArray(prismaError.meta?.target)
+      ? prismaError.meta.target
+      : [];
+    const originalMessage =
+      prismaError.meta?.driverAdapterError?.cause?.originalMessage ?? "";
+
+    if (
+      target.includes("licenseNumber") ||
+      originalMessage.includes("Driver_licenseNumber_key")
+    ) {
       throw new AppError(
         409,
         "La licencia del conductor ya existe",
@@ -24,7 +40,10 @@ const handleDriverPrismaError = (error: unknown): never => {
       );
     }
 
-    if (target.includes("employeeCode")) {
+    if (
+      target.includes("employeeCode") ||
+      originalMessage.includes("Driver_employeeCode_key")
+    ) {
       throw new AppError(
         409,
         "El codigo de empleado del conductor ya existe",
@@ -32,7 +51,7 @@ const handleDriverPrismaError = (error: unknown): never => {
       );
     }
 
-    if (target.includes("email")) {
+    if (target.includes("email") || originalMessage.includes("Driver_email_key")) {
       throw new AppError(409, "El correo del conductor ya existe", "DUPLICATED_EMAIL");
     }
   }
@@ -92,6 +111,26 @@ export const driverService = {
       data: {
         status: "INACTIVO",
       },
+    });
+  },
+
+  delete: async (id: string) => {
+    await driverService.findById(id);
+
+    const assignmentCount = await prisma.vehicleDriverAssignment.count({
+      where: { driverId: id },
+    });
+
+    if (assignmentCount > 0) {
+      throw new AppError(
+        409,
+        "No se puede eliminar el conductor porque tiene historial de asignaciones. Puedes desactivarlo.",
+        "DRIVER_HAS_ASSIGNMENTS",
+      );
+    }
+
+    return prisma.driver.delete({
+      where: { id },
     });
   },
 };

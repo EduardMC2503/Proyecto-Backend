@@ -11,8 +11,12 @@ export class AppError extends Error {
   }
 }
 
+const isZodError = (error: unknown): error is ZodError => {
+  return error instanceof ZodError || (error as Error).name === "ZodError";
+};
+
 export const errorMiddleware: ErrorRequestHandler = (error, _req, res, _next) => {
-  if (error instanceof ZodError) {
+  if (isZodError(error)) {
     res.status(400).json({
       message: "Error de validacion",
       error: "VALIDATION_ERROR",

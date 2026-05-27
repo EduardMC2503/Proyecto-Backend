@@ -49,11 +49,16 @@ export const vehicleController = {
 
   delete: async (req: Request, res: Response) => {
     const { id } = vehicleParamsSchema.parse(req.params);
-    const vehicle = await vehicleService.deactivate(id);
+    const hardDelete = req.query["hard"] === "true";
+    const vehicle = hardDelete
+      ? await vehicleService.delete(id)
+      : await vehicleService.deactivate(id);
 
     res.json({
       data: vehicle,
-      message: "Vehiculo desactivado correctamente",
+      message: hardDelete
+        ? "Vehiculo eliminado correctamente"
+        : "Vehiculo desactivado correctamente",
     });
   },
 };

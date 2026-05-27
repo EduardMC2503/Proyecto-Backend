@@ -49,11 +49,16 @@ export const driverController = {
 
   delete: async (req: Request, res: Response) => {
     const { id } = driverParamsSchema.parse(req.params);
-    const driver = await driverService.deactivate(id);
+    const hardDelete = req.query["hard"] === "true";
+    const driver = hardDelete
+      ? await driverService.delete(id)
+      : await driverService.deactivate(id);
 
     res.json({
       data: driver,
-      message: "Conductor desactivado correctamente",
+      message: hardDelete
+        ? "Conductor eliminado correctamente"
+        : "Conductor desactivado correctamente",
     });
   },
 };

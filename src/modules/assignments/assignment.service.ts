@@ -7,8 +7,8 @@ const assignmentInclude = {
   driver: true,
 };
 
-const isActiveStatus = (status: string) => {
-  return ["ACTIVE", "ACTIVO"].includes(status.toUpperCase());
+const isInactiveStatus = (status: string) => {
+  return ["INACTIVE", "INACTIVO"].includes(status.toUpperCase());
 };
 
 export const assignmentService = {
@@ -60,7 +60,7 @@ export const assignmentService = {
       );
     }
 
-    if (!isActiveStatus(driver.status)) {
+    if (isInactiveStatus(driver.status)) {
       throw new AppError(
         400,
         "Un conductor inactivo no puede asignarse a un vehiculo",
@@ -107,14 +107,29 @@ export const assignmentService = {
       );
     }
 
-    return prisma.vehicleDriverAssignment.create({
-      data: {
-        vehicleId: data.vehicleId,
-        driverId: data.driverId,
-        assignedAt: data.assignedAt ?? new Date(),
-        active: true,
-      },
-      include: assignmentInclude,
+    return prisma.$transaction(async (transaction) => {
+      const assignment = await transaction.vehicleDriverAssignment.create({
+        data: {
+          vehicleId: data.vehicleId,
+          driverId: data.driverId,
+          assignedAt: data.assignedAt ?? new Date(),
+          active: true,
+        },
+        include: assignmentInclude,
+      });
+
+      await Promise.all([
+        transaction.vehicle.update({
+          where: { id: data.vehicleId },
+          data: { status: "Asignado" },
+        }),
+        transaction.driver.update({
+          where: { id: data.driverId },
+          data: { status: "Asignado" },
+        }),
+      ]);
+
+      return assignment;
     });
   },
 
@@ -129,13 +144,28 @@ export const assignmentService = {
       );
     }
 
-    return prisma.vehicleDriverAssignment.update({
-      where: { id },
-      data: {
-        active: false,
-        unassignedAt: new Date(),
-      },
-      include: assignmentInclude,
+    return prisma.$transaction(async (transaction) => {
+      const finishedAssignment = await transaction.vehicleDriverAssignment.update({
+        where: { id },
+        data: {
+          active: false,
+          unassignedAt: new Date(),
+        },
+        include: assignmentInclude,
+      });
+
+      await Promise.all([
+        transaction.vehicle.update({
+          where: { id: assignment.vehicleId },
+          data: { status: "Disponible" },
+        }),
+        transaction.driver.update({
+          where: { id: assignment.driverId },
+          data: { status: "Disponible" },
+        }),
+      ]);
+
+      return finishedAssignment;
     });
   },
 };

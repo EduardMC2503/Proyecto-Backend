@@ -9,18 +9,48 @@ const removeUndefinedValues = <T extends Record<string, unknown>>(data: T) => {
   );
 };
 
-const handleVehiclePrismaError = (error: unknown): never => {
-  if (
-    error instanceof Prisma.PrismaClientKnownRequestError &&
-    error.code === "P2002"
-  ) {
-    const target = Array.isArray(error.meta?.target) ? error.meta.target : [];
+const normalizeVehicleStatus = <
+  T extends { status?: string | undefined; active?: boolean | undefined },
+>(
+  data: T,
+) => {
+  if (!data.status) {
+    return data;
+  }
 
-    if (target.includes("plate")) {
+  const isInactive = data.status.toLowerCase() === "inactivo";
+
+  return {
+    ...data,
+    active: !isInactive,
+  };
+};
+
+const handleVehiclePrismaError = (error: unknown): never => {
+  const prismaError = error as {
+    code?: string;
+    meta?: {
+      target?: unknown;
+      driverAdapterError?: {
+        cause?: {
+          originalMessage?: string;
+        };
+      };
+    };
+  };
+
+  if (prismaError.code === "P2002") {
+    const target = Array.isArray(prismaError.meta?.target)
+      ? prismaError.meta.target
+      : [];
+    const originalMessage =
+      prismaError.meta?.driverAdapterError?.cause?.originalMessage ?? "";
+
+    if (target.includes("plate") || originalMessage.includes("Vehicle_plate_key")) {
       throw new AppError(409, "La placa del vehiculo ya existe", "DUPLICATED_PLATE");
     }
 
-    if (target.includes("code")) {
+    if (target.includes("code") || originalMessage.includes("Vehicle_code_key")) {
       throw new AppError(409, "El codigo del vehiculo ya existe", "DUPLICATED_CODE");
     }
   }
@@ -52,7 +82,9 @@ export const vehicleService = {
   create: async (data: CreateVehicleInput) => {
     try {
       return await prisma.vehicle.create({
-        data: removeUndefinedValues(data) as Prisma.VehicleCreateInput,
+        data: removeUndefinedValues(
+          normalizeVehicleStatus(data),
+        ) as Prisma.VehicleCreateInput,
       });
     } catch (error) {
       handleVehiclePrismaError(error);
@@ -65,7 +97,9 @@ export const vehicleService = {
     try {
       return await prisma.vehicle.update({
         where: { id },
-        data: removeUndefinedValues(data) as Prisma.VehicleUpdateInput,
+        data: removeUndefinedValues(
+          normalizeVehicleStatus(data),
+        ) as Prisma.VehicleUpdateInput,
       });
     } catch (error) {
       handleVehiclePrismaError(error);
@@ -79,7 +113,28 @@ export const vehicleService = {
       where: { id },
       data: {
         active: false,
+        status: "Inactivo",
       },
+    });
+  },
+
+  delete: async (id: string) => {
+    await vehicleService.findById(id);
+
+    const assignmentCount = await prisma.vehicleDriverAssignment.count({
+      where: { vehicleId: id },
+    });
+
+    if (assignmentCount > 0) {
+      throw new AppError(
+        409,
+        "No se puede eliminar el vehiculo porque tiene historial de asignaciones. Puedes desactivarlo.",
+        "VEHICLE_HAS_ASSIGNMENTS",
+      );
+    }
+
+    return prisma.vehicle.delete({
+      where: { id },
     });
   },
 };

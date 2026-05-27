@@ -30,7 +30,7 @@ const vehicles = [
     fuelType: "GASOLINA",
     tankCapacityLiters: 80,
     expectedEfficiencyKmL: 10.5,
-    status: "DISPONIBLE",
+    status: "Asignado",
     active: true,
   },
   {
@@ -44,7 +44,7 @@ const vehicles = [
     fuelType: "DIESEL",
     tankCapacityLiters: 75,
     expectedEfficiencyKmL: 11.2,
-    status: "DISPONIBLE",
+    status: "Asignado",
     active: true,
   },
   {
@@ -58,7 +58,7 @@ const vehicles = [
     fuelType: "DIESEL",
     tankCapacityLiters: 95,
     expectedEfficiencyKmL: 8.8,
-    status: "DISPONIBLE",
+    status: "Disponible",
     active: true,
   },
   {
@@ -72,7 +72,7 @@ const vehicles = [
     fuelType: "GASOLINA",
     tankCapacityLiters: 76,
     expectedEfficiencyKmL: 9.7,
-    status: "MANTENIMIENTO",
+    status: "Mantenimiento",
     active: true,
   },
   {
@@ -86,7 +86,7 @@ const vehicles = [
     fuelType: "DIESEL",
     tankCapacityLiters: 100,
     expectedEfficiencyKmL: 9.1,
-    status: "DISPONIBLE",
+    status: "Disponible",
     active: true,
   },
 ];
@@ -100,7 +100,7 @@ const drivers = [
     licenseNumber: "LIC-001",
     licenseType: "Tipo B",
     licenseExpiresAt: new Date("2028-12-31T00:00:00.000Z"),
-    status: "ACTIVO",
+    status: "Asignado",
   },
   {
     employeeCode: "DR-002",
@@ -110,7 +110,7 @@ const drivers = [
     licenseNumber: "LIC-002",
     licenseType: "Tipo C",
     licenseExpiresAt: new Date("2029-06-30T00:00:00.000Z"),
-    status: "ACTIVO",
+    status: "Asignado",
   },
   {
     employeeCode: "DR-003",
@@ -120,7 +120,7 @@ const drivers = [
     licenseNumber: "LIC-003",
     licenseType: "Tipo B",
     licenseExpiresAt: new Date("2027-09-15T00:00:00.000Z"),
-    status: "ACTIVO",
+    status: "Disponible",
   },
   {
     employeeCode: "DR-004",
@@ -130,7 +130,7 @@ const drivers = [
     licenseNumber: "LIC-004",
     licenseType: "Tipo A",
     licenseExpiresAt: new Date("2028-03-20T00:00:00.000Z"),
-    status: "ACTIVO",
+    status: "Disponible",
   },
   {
     employeeCode: "DR-005",
@@ -140,7 +140,7 @@ const drivers = [
     licenseNumber: "LIC-005",
     licenseType: "Tipo C",
     licenseExpiresAt: new Date("2030-01-10T00:00:00.000Z"),
-    status: "ACTIVO",
+    status: "Disponible",
   },
 ];
 

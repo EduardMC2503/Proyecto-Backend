@@ -5,14 +5,14 @@ export const driverParamsSchema = z.object({
 });
 
 const driverBaseSchema = z.object({
-  employeeCode: z.string().trim().min(1, "El codigo de empleado es obligatorio"),
-  fullName: z.string().trim().min(1, "El nombre completo es obligatorio"),
-  email: z.string().trim().email("El correo debe ser valido"),
-  phone: z.string().trim().min(1, "El telefono es obligatorio"),
-  licenseNumber: z.string().trim().min(1, "El numero de licencia es obligatorio"),
-  licenseType: z.string().trim().min(1, "El tipo de licencia es obligatorio"),
+  employeeCode: z.string().trim().min(1, "El codigo de empleado es obligatorio").max(10, "El codigo de empleado no puede superar 10 caracteres"),
+  fullName: z.string().trim().min(1, "El nombre completo es obligatorio").max(80, "El nombre completo no puede superar 80 caracteres"),
+  email: z.string().trim().email("El correo debe ser valido").max(80, "El correo no puede superar 80 caracteres"),
+  phone: z.string().trim().min(1, "El telefono es obligatorio").max(10, "El telefono no puede superar 10 caracteres"),
+  licenseNumber: z.string().trim().min(1, "El numero de licencia es obligatorio").max(15, "El numero de licencia no puede superar 15 caracteres"),
+  licenseType: z.string().trim().min(1, "El tipo de licencia es obligatorio").max(15, "El tipo de licencia no puede superar 15 caracteres"),
   licenseExpiresAt: z.coerce.date(),
-  status: z.string().trim().min(1, "El estado es obligatorio"),
+  status: z.string().trim().min(1, "El estado es obligatorio").max(20, "El estado no puede superar 20 caracteres"),
 });
 
 export const createDriverSchema = driverBaseSchema;
