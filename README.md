@@ -270,12 +270,6 @@ Para ejecutar las pruebas del backend:
 npm test
 ```
 
-Si existe un script específico para modo watch:
-
-```bash
-npm run test:watch
-```
-
 ---
 
 ## Flujo recomendado para levantar el backend localmente
